@@ -212,8 +212,8 @@ function loop(now){
 updateBestStatsMenu();
 initInput(canvas);
 
-// NOTE: PWA service-worker registration is disabled in the extension build;
-// extension pages are offline by definition.
+// NOTE: PWA service-worker + install-button logic is disabled in the extension build;
+// extension pages are installable/offline by definition.
 
 document.getElementById('start-btn').addEventListener('click', startGame);
 document.getElementById('restart-btn').addEventListener('click', startGame);

@@ -173,6 +173,10 @@ canvas{cursor:none;display:block;position:fixed;top:0;left:0}
 .btn.danger:hover{background:var(--neon-magenta);color:var(--bg-0);box-shadow:0 0 40px rgba(255,46,126,.6)}
 .btn.small{font-size:12px;padding:12px 32px;letter-spacing:4px}
 
+/* Install-app button (PWA) */
+.install-btn{margin-top:20px;border-color:var(--neon-lime);color:var(--neon-lime);text-shadow:0 0 12px var(--neon-lime);box-shadow:0 0 24px rgba(127,255,58,.2)}
+.install-btn:hover{background:var(--neon-lime);color:var(--bg-0);box-shadow:0 0 40px rgba(127,255,58,.6)}
+
 .btn-group {
   display: flex;
   gap: 16px;

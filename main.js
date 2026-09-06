@@ -220,6 +220,33 @@ if ('serviceWorker' in navigator && window.isSecureContext) {
   });
 }
 
+// ===== Install-app button =====
+// Chrome fires beforeinstallprompt when the site satisfies PWA criteria.
+// We capture it so an in-page button can trigger the native install dialog.
+let deferredInstallPrompt = null;
+const installBtn = document.getElementById('install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); // SECURITY: prevent Chrome's mini-infobar; installs only happen via explicit user click
+  deferredInstallPrompt = e;
+  if (!window.matchMedia('(display-mode: standalone)').matches) {
+    installBtn.style.display = 'inline-block';
+  }
+});
+
+installBtn.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const choice = await deferredInstallPrompt.userChoice;
+  if (choice.outcome === 'accepted') installBtn.style.display = 'none';
+  deferredInstallPrompt = null;
+});
+
+// Hide the button if the app is already running installed
+window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+  if (e.matches) installBtn.style.display = 'none';
+});
+
 document.getElementById('start-btn').addEventListener('click', startGame);
 document.getElementById('restart-btn').addEventListener('click', startGame);
 document.getElementById('menu-btn').addEventListener('click', returnToMenu);
