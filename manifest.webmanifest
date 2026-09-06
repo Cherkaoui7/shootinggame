@@ -1,0 +1,19 @@
+{
+  "name": "VOID PROTOCOL — Arena Shooter",
+  "short_name": "VOID PROTOCOL",
+  "description": "A fast-paced, top-down neon arena shooter. Survive endless waves, defeat bosses, collect upgrades.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#06030d",
+  "theme_color": "#06030d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

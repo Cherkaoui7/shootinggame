@@ -212,6 +212,14 @@ function loop(now){
 updateBestStatsMenu();
 initInput(canvas);
 
+// ===== Offline support (PWA) =====
+// Service workers require a secure context (HTTPS or localhost).
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  navigator.serviceWorker.register('./sw.js').catch(err => {
+    console.warn('Service worker registration failed; game still works online.', err);
+  });
+}
+
 document.getElementById('start-btn').addEventListener('click', startGame);
 document.getElementById('restart-btn').addEventListener('click', startGame);
 document.getElementById('menu-btn').addEventListener('click', returnToMenu);
