@@ -48,7 +48,15 @@ export function showUpgradeScreen() {
   chosen.forEach(up => {
     const card = document.createElement('div');
     card.className = 'upgrade-card';
-    card.innerHTML = `<div class="glyph">${up.glyph}</div><h3>${up.name}</h3><p>${up.desc}</p>`;
+    // SECURITY: built via textContent (not innerHTML) so upgrade data can never inject markup
+    const glyph = document.createElement('div');
+    glyph.className = 'glyph';
+    glyph.textContent = up.glyph;
+    const title = document.createElement('h3');
+    title.textContent = up.name;
+    const desc = document.createElement('p');
+    desc.textContent = up.desc;
+    card.append(glyph, title, desc);
     card.addEventListener('click', () => {
       SFX.upgrade();
       applyUpgrade(up);

@@ -11,7 +11,17 @@ export function updateWeaponPanel(){
   WEAPONS.forEach((w, i) => {
     const slot = document.createElement('div');
     slot.className = 'weapon-slot' + (i === game.player.currentWeapon ? ' active' : '');
-    slot.innerHTML = `<div class="num">[${i+1}]</div><div class="name">${w.name}</div><div class="ammo">${w.ammo === Infinity ? '∞' : w.ammo}</div>`;
+    // SECURITY: built via textContent (not innerHTML) so weapon data can never inject markup
+    const num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = `[${i+1}]`;
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = w.name;
+    const ammo = document.createElement('div');
+    ammo.className = 'ammo';
+    ammo.textContent = w.ammo === Infinity ? '∞' : w.ammo;
+    slot.append(num, name, ammo);
     slot.addEventListener('click', () => switchWeapon(i));
     panel.appendChild(slot);
   });
@@ -24,7 +34,15 @@ export function updateUpgradesHUD() {
     const div = document.createElement('div');
     div.className = 'upgrade-icon';
     div.title = up.name;
-    div.innerHTML = up.glyph + (up.stacks > 1 ? `<span class="stacks">${up.stacks}</span>` : '');
+    // SECURITY: textContent instead of innerHTML — upgrade glyphs/names are constants today,
+    // but this keeps the sink safe if they ever come from external data
+    div.textContent = up.glyph;
+    if (up.stacks > 1) {
+      const stacks = document.createElement('span');
+      stacks.className = 'stacks';
+      stacks.textContent = up.stacks;
+      div.appendChild(stacks);
+    }
     container.appendChild(div);
   });
 }

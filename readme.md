@@ -19,7 +19,8 @@ A fast-paced, top-down neon arena shooter built entirely with vanilla HTML5, CSS
    * [Upgrades](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#upgrades)
 5. [Project Structure](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-project-structure)
 6. [Technical Highlights](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-technical-highlights)
-7. [How to Run](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-how-to-run)
+7. [Security](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-security)
+8. [How to Run](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-how-to-run)
 
 ---
 
@@ -118,6 +119,18 @@ shooting game/
 * `main.js` owns the shared mutable state (`game`, `state`, viewport size) and shares it via ES module live bindings; a `setState()` helper lets other modules change the game state.
 * `update()` in `main.js` coordinates per-frame work by delegating to `updatePlayer`/`updateBullets` (player.js), `updateEnemies`/`updateEnemyBullets` (enemies.js, which delegates boss behavior to boss.js), and `updateHUD` (ui.js).
 * `render.js` defines the canvas and all drawing; it reads the same shared state each frame.
+
+---
+
+## 🔒 Security
+
+Although the game is entirely client-side and handles no user-generated content, several hardening measures are in place:
+
+* **Content-Security-Policy** : A strict CSP is set via `<meta>` tag in `index.html` — scripts may only load from the same origin (`script-src 'self'`), inline scripts and plugin objects (`object-src 'none'`) are blocked, network requests are disallowed (`connect-src 'none'`), and `base-uri 'none'` prevents base-tag hijacking.
+* **No HTML injection sinks** : All dynamic DOM updates (weapon panel, upgrade cards, HUD) are built with `createElement` + `textContent` instead of `innerHTML`, so no markup/HTML injection path exists even if displayed data ever becomes dynamic.
+* **Safe storage handling** : LocalStorage reads are wrapped in `try/catch` and parsed strictly with `parseInt(..., 10)`; only two known keys (`voidProtocol_bestScore`, `voidProtocol_bestWave`) are ever written.
+* **Zero network surface** : The game makes no API calls and sends no data anywhere; it only fetches its own static files and the Google Fonts stylesheet (both covered by the CSP).
+* **No dependencies** : No third-party libraries means no supply-chain or known-CVE exposure.
 
 ---
 
