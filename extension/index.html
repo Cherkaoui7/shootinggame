@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- SECURITY: CSP restricts script/style/font sources; no inline scripts are allowed anywhere -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'none'; object-src 'none'; base-uri 'none'">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<!-- PWA: installable + offline-capable via sw.js -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06030d">
+<title>VOID PROTOCOL — Arena Shooter</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<!-- HUD -->
+<div id="hud">
+  <div id="upgrades-hud">
+    <div class="upgrades-title">AUGMENTS</div>
+    <div id="active-upgrades-list"></div>
+  </div>
+  <div class="hud-top">
+    <div class="hud-stat score"><div class="label">SCORE</div><div class="value" id="score">0</div></div>
+    <div class="hud-stat wave"><div class="label">WAVE</div><div class="value" id="wave">1</div></div>
+    <div class="hud-stat combo"><div class="label">COMBO</div><div class="value" id="combo">x1</div></div>
+  </div>
+  <div id="boss-hud">
+    <div class="boss-name" id="boss-name">VOID WARDEN</div>
+    <div class="boss-bar-bg"><div class="boss-bar-fill" id="boss-hp-fill" style="width:100%"></div></div>
+  </div>
+  <div class="hud-side">
+    <div class="kill-stat">KILLS <span id="kills">0</span></div>
+    <div class="kill-stat">ACCURACY <span id="accuracy">0%</span></div>
+    <div class="kill-stat">TIME <span id="time">0:00</span></div>
+  </div>
+  <div class="hud-bottom">
+    <div class="hp-wrap">
+      <div class="label"><span>HULL INTEGRITY</span><span id="hp-text">100</span></div>
+      <div class="hp-bar"><div class="hp-fill" id="hp-fill" style="width:100%"></div></div>
+      <div class="label" style="font-size:8px;letter-spacing:2px"><span>DASH</span><span id="dash-text">READY</span></div>
+      <div class="dash-bar"><div class="dash-fill" id="dash-fill" style="width:100%"></div></div>
+    </div>
+    <div class="weapon-panel" id="weapon-panel"></div>
+  </div>
+  <div class="wave-banner" id="wave-banner"><div class="small">INCOMING</div><div class="big" id="wave-banner-text">WAVE 1</div></div>
+</div>
+
+<!-- Menu -->
+<div class="screen" id="menu-screen">
+  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+  <div class="logo">
+    <div class="tagline">ARENA SHOOTER · v1.0</div>
+    <h1>VOID PROTOCOL</h1>
+    <div class="subtitle">SURVIVE THE INFINITE WAVE</div>
+    <div class="best-stats">
+      <div class="best-stat"><div class="label">BEST SCORE</div><div class="val" id="menu-best-score">0</div></div>
+      <div class="best-stat"><div class="label">BEST WAVE</div><div class="val" id="menu-best-wave">0</div></div>
+    </div>
+  </div>
+  <div class="menu-grid">
+    <div><span class="key">W A S D</span><span>Pilot movement</span></div>
+    <div><span class="key">MOUSE</span><span>Aim direction</span></div>
+    <div><span class="key">L-CLICK</span><span>Fire weapon</span></div>
+    <div><span class="key">SHIFT</span><span>Burst dash</span></div>
+    <div><span class="key">1 2 3</span><span>Switch weapon</span></div>
+    <div><span class="key">P / ESC</span><span>Pause</span></div>
+  </div>
+  <button class="btn" id="start-btn">INITIATE</button>
+</div>
+
+<!-- Upgrade Screen -->
+<div class="screen hidden" id="upgrade-screen">
+  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+  <div class="upgrade-header">
+    <div class="tagline">WAVE CLEAR</div>
+    <h2>UPGRADE DETECTED</h2>
+    <div class="subtitle">SELECT AUGMENTATION</div>
+  </div>
+  <div id="upgrade-cards"></div>
+</div>
+
+<!-- Game Over -->
+<div class="screen hidden" id="gameover-screen">
+  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+  <div class="game-over-title">SIGNAL LOST</div>
+  <div class="game-over-sub">HULL BREACH DETECTED</div>
+  <div class="new-record" id="new-record" style="display:none;">NEW RECORD ACHIEVED</div>
+  <div class="end-stats">
+    <div class="end-stat"><div class="label">FINAL SCORE</div><div class="value" id="end-score">0</div></div>
+    <div class="end-stat wave"><div class="label">WAVE REACHED</div><div class="value" id="end-wave">1</div></div>
+    <div class="end-stat deaths"><div class="label">KILLS</div><div class="value" id="end-kills">0</div></div>
+  </div>
+  <div class="btn-group">
+    <button class="btn" id="restart-btn">RECONNECT</button>
+    <button class="btn danger small" id="menu-btn">MAIN MENU</button>
+  </div>
+</div>
+
+<!-- Pause -->
+<div class="pause-overlay" id="pause-overlay">
+  <h2>PAUSED</h2>
+  <div class="pause-text">PRESS P TO RESUME</div>
+  <div class="btn-group">
+    <button class="btn danger small" id="pause-restart-btn">ABORT MISSION</button>
+    <button class="btn small" id="pause-menu-btn">MAIN MENU</button>
+  </div>
+</div>
+
+<div class="vignette"></div>
+<div class="scanlines"></div>
+<div class="damage-flash" id="damage-flash"></div>
+<div class="low-hp-vignette" id="low-hp-vignette"></div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>

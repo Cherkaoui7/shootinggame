@@ -18,9 +18,10 @@ A fast-paced, top-down neon arena shooter built entirely with vanilla HTML5, CSS
    * [Bosses](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#bosses)
    * [Upgrades](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#upgrades)
 5. [Project Structure](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-project-structure)
-6. [Technical Highlights](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-technical-highlights)
-7. [Security](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-security)
-8. [How to Run](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-how-to-run)
+6. [Browser Extension](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-browser-extension)
+7. [Technical Highlights](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-technical-highlights)
+8. [Security](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-security)
+9. [How to Run](https://chat.z.ai/c/8cd7b1d6-c57d-4d70-9481-498e57ee0a98#-how-to-run)
 
 ---
 
@@ -131,6 +132,36 @@ Although the game is entirely client-side and handles no user-generated content,
 * **Safe storage handling** : LocalStorage reads are wrapped in `try/catch` and parsed strictly with `parseInt(..., 10)`; only two known keys (`voidProtocol_bestScore`, `voidProtocol_bestWave`) are ever written.
 * **Zero network surface** : The game makes no API calls and sends no data anywhere; it only fetches its own static files and the Google Fonts stylesheet (both covered by the CSP).
 * **No dependencies** : No third-party libraries means no supply-chain or known-CVE exposure.
+
+---
+
+## 🧩 Browser Extension
+
+The game ships as a **Manifest V3 browser extension** for Chrome, Brave, Edge, Opera, and other Chromium browsers. Clicking the toolbar icon opens the game fullscreen in its own tab — no server, no internet connection needed.
+
+The extension lives in the self-contained [`extension/`](extension/) folder:
+
+```
+extension/
+├── manifest.json    # MV3 manifest (no permissions required)
+├── background.js    # Opens the game tab on toolbar-icon click
+├── icons/           # Toolbar + store icons (16/48/128 px)
+└── …                # The same game files (index.html, styles.css, *.js)
+```
+
+**Install (unpacked, developer mode):**
+
+1. Download or clone this repository.
+2. Open `chrome://extensions` (or `brave://extensions`, `edge://extensions`).
+3. Enable **Developer mode** (top-right toggle).
+4. Click **Load unpacked** and select the `extension/` folder.
+5. Click the VOID PROTOCOL icon in the toolbar to play.
+
+**Distribute:** `void-protocol-extension.zip` in the repo root is a Web Store–ready package (build it by zipping the *contents* of the `extension/` folder).
+
+Notes:
+* The extension build is identical to the web build, except the PWA service-worker registration is stripped (extension pages are offline by definition).
+* If you change the game code, re-copy the files into `extension/` and reload the extension on the extensions page.
 
 ---
 

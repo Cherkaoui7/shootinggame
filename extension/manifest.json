@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "VOID PROTOCOL — Arena Shooter",
+  "version": "1.0.0",
+  "description": "A fast-paced neon arena shooter. Survive endless waves, defeat bosses, collect upgrades. Works fully offline.",
+  "offline_enabled": true,
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "VOID PROTOCOL — play",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": []
+}
