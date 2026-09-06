@@ -3,7 +3,7 @@
    main.js — Core game loop, state management, and initialization
    ============================================================ */
 import { initAudio, SFX } from './audio.js';
-import { keys, initInput } from './input.js';
+import { initInput } from './input.js';
 import { getBestScore, submitScore } from './storage.js';
 import { canvas, ctx, initStars, updateStars, render } from './render.js';
 import { updateWeaponPanel, updateUpgradesHUD, updateBestStatsMenu, updateLowHpVignette, updateHUD } from './ui.js';
